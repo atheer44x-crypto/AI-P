@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المساعد الذكي - أمانة منطقة حائل</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="char-panel">
+    <canvas class="wave-canvas" id="waveCanvas"></canvas>
+    <img src="T.gif" style="width:260px;position:relative;z-index:3;">
+    <div class="char-label">مساعدك الذكي</div>
+  </div>
+
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h2>المساعد الذكي لأمانة منطقة حائل</h2>
+      <p>منصة بلدي بيانات</p>
+    </div>
+    <div class="chat-box">
+      <div class="msgs" id="msgs">
+        <div class="msg bot">مرحبًا بسعادتك، كيف أستطيع مساعدتك في تحليل البيانات اليوم؟</div>
+      </div>
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="chat-footer">
+        <button onclick="sendMsg()" id="sendBtn">إرسال</button>
+        <input type="text" id="inp" placeholder="اكتب سؤالك هنا...">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+  (function(){
+    var canvas = document.getElementById('waveCanvas');
+    var panel  = canvas.parentElement;
+    var ctx    = canvas.getContext('2d');
+    var t = 0;
+    function resize(){ canvas.width=panel.offsetWidth; canvas.height=panel.offsetHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    var waves = [
+      { amp:6,  freq:0.013, speed:0.006, yRatio:0.52, lw:0.7,  op:0.25, color:'185,242,228' },
+      { amp:4,  freq:0.016, speed:0.009, yRatio:0.38, lw:0.45, op:0.10, color:'130,225,205' },
+      { amp:3,  freq:0.020, speed:0.011, yRatio:0.25, lw:0.40, op:0.08, color:'100,215,192' },
+      { amp:3,  freq:0.024, speed:0.013, yRatio:0.13, lw:0.35, op:0.06, color:'80,205,180'  },
+      { amp:5,  freq:0.015, speed:0.008, yRatio:0.65, lw:0.45, op:0.09, color:'120,220,198' },
+      { amp:3,  freq:0.019, speed:0.010, yRatio:0.76, lw:0.38, op:0.07, color:'90,208,183'  },
+      { amp:3,  freq:0.023, speed:0.012, yRatio:0.87, lw:0.35, op:0.06, color:'70,198,172'  },
+    ];
+    function drawWave(w){
+      var W=canvas.width, H=canvas.height, yBase=H*w.yRatio;
+      ctx.beginPath(); ctx.moveTo(0, yBase);
+      for(var x=0; x<=W+1; x+=1.5){
+        var y=yBase+Math.sin(x*w.freq+t*w.speed)*w.amp+Math.sin(x*w.freq*0.55+t*w.speed*1.45+1.2)*(w.amp*0.32);
+        ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle='rgba('+w.color+','+w.op+')'; ctx.lineWidth=w.lw; ctx.stroke();
+    }
+    function draw(){ t+=0.75; ctx.clearRect(0,0,canvas.width,canvas.height); waves.forEach(drawWave); requestAnimationFrame(draw); }
+    draw();
+  })();
+</script>
+</body>
+</html>
